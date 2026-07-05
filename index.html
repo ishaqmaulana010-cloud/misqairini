@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MISQAIRINI - Perjalanan Cinta</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Great+Vibes&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="intro-screen">
+        <div class="intro-content">
+            <h1 class="intro-title">MISQAIRINI</h1>
+            <p class="intro-subtitle">Maulana IShaQ dAn dIah RisqI hasaNI</p>
+            <button id="enter-btn" class="btn-enter">Buka Kisah Kita ✨</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section dengan Background Hitam & Balon 3D -->
+        <header class="hero reveal">
+            <!-- Wadah Balon Melayang -->
+            <div id="balloon-container"></div>
+
+            <div class="hero-content">
+                <h1 class="couple-names glowing-text">MISQAIRINI</h1>
+                <p class="tagline dark-tagline">Setiap detik bersamamu adalah cerita favoritku.</p>
+                <a href="#story" class="btn-primary">Lihat Kisah Kita</a>
+            </div>
+        </header>
+
+        <!-- Relationship Timer Section -->
+        <section class="timer-section reveal">
+            <h2>Kita Telah Bersama Selama:</h2>
+            <div class="timer-box" id="love-timer">
+                <div class="time-unit"><span id="days">0</span><small>Hari</small></div>
+                <div class="time-unit"><span id="hours">0</span><small>Jam</small></div>
+                <div class="time-unit"><span id="minutes">0</span><small>Menit</small></div>
+                <div class="time-unit"><span id="seconds">0</span><small>Detik</small></div>
+            </div>
+        </section>
+
+        <!-- Our Story Section -->
+        <section id="story" class="story-section reveal">
+            <h2>Perjalanan Kita</h2>
+            <div class="timeline">
+                <div class="card">
+                    <h3>Pertama Kali Berkenalan 🌟</h3>
+                    <p class="date">13 April 2022</p>
+                    <p>Hari di mana semuanya bermula. Perkenalan yang sederhana tapi mengubah segalanya.</p>
+                </div>
+                <div class="card">
+                    <h3>Komitmen ❤️</h3>
+                    <p class="date">25 September 2023</p>
+                    <p>Kita memutuskan untuk selalu melangkah bersama, berbagi tawa, dan saling mendukung.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery-section reveal">
+            <h2>Momen Favorit</h2>
+            <div class="gallery-grid">
+                <div class="photo-card" style="background-image: url('liburan.jpg');"><span>Liburan Bareng</span></div>
+                <div class="photo-card" style="background-image: url('senyum.jpg');"><span>Senyummu</span></div>
+                <div class="photo-card" style="background-image: url('kuliner.jpg');"><span>Kulineran</span></div>
+            </div>
+        </section>
+
+        <!-- Interactive Love Note -->
+        <section class="interactive-section reveal">
+            <h2>Kotak Surat Cinta 💌</h2>
+            <p>Klik tombol di bawah ini kalau kamu lagi kangen!</p>
+            <button id="loveBtn" class="btn-love">Klik Saya ❤️</button>
+            <div id="loveMessage" class="hidden-message"></div>
+        </section>
+
+        <footer>
+            <p>Dibuat dengan ❤️ untuk kakak & adek selamanya.</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
