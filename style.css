@@ -378,4 +378,9 @@ footer {
     background: #f8bbd0;
     color: #880e4f;
     font-size: 0.9rem;
+}/* Warna khusus untuk huruf kapital agar menyala pink neon */
+.intro-subtitle .cap-glow {
+    color: #ff1a8c; /* Warna pink menyala */
+    font-weight: 700; /* Membuat huruf kapital sedikit lebih tegas */
+    text-shadow: 0 0 10px #ff1a8c, 0 0 20px #ff80bf; /* Efek neon khusus huruf kapital */
 }
