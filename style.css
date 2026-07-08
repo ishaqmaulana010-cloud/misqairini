@@ -14,6 +14,9 @@ body {
     color: #4a4a4a;
     line-height: 1.6;
     overflow-x: hidden;
+    /* Mencegah lag akibat select teks saat menyentuh layar HP berkali-kali */
+    -webkit-user-select: none;
+    user-select: none; 
 }
 
 /* ================= INTRO SCREEN ================= */
@@ -29,7 +32,8 @@ body {
     align-items: center;
     text-align: center;
     z-index: 9999;
-    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
+    transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
+    will-change: transform, opacity; /* Optimasi Transisi Masuk */
 }
 
 .intro-screen.slide-up {
@@ -40,12 +44,13 @@ body {
 
 .intro-content {
     padding: 20px;
+    width: 100%;
 }
 
 .intro-title {
     font-family: 'Cinzel', serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    letter-spacing: 8px;
+    font-size: clamp(2.2rem, 7vw, 5rem);
+    letter-spacing: 4px;
     background: linear-gradient(45deg, #ff80bf, #ff1a8c, #ffd1e8);
     -webkit-background-clip: text;
     background-clip: text;
@@ -54,32 +59,34 @@ body {
     animation: glowText 3s ease-in-out infinite alternate, floatText 4s ease-in-out infinite;
     margin-bottom: 15px;
     filter: drop-shadow(0 0 15px rgba(255, 26, 140, 0.6));
+    will-change: transform, filter;
 }
 
 .intro-subtitle {
-    font-size: clamp(0.9rem, 2.5vw, 1.4rem);
+    font-size: clamp(0.8rem, 3vw, 1.3rem);
     color: #fce4ec;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     margin-bottom: 40px;
+    padding: 0 15px;
     opacity: 0;
-    animation: fadeInSubtitle 2s ease forwards 0.8s;
+    animation: fadeInSubtitle 1.5s ease forwards 0.5s;
 }
 
 .btn-enter {
-    padding: 15px 40px;
-    font-size: 1.1rem;
+    padding: 14px 35px;
+    font-size: 1rem;
     color: #fff;
     background: transparent;
     border: 2px solid #ff1a8c;
     border-radius: 50px;
     cursor: pointer;
     box-shadow: 0 0 15px rgba(255, 26, 140, 0.4);
-    transition: all 0.4s ease;
+    transition: all 0.3s ease;
     opacity: 0;
-    animation: fadeInSubtitle 2s ease forwards 1.5s;
+    animation: fadeInSubtitle 1.5s ease forwards 1s;
 }
 
-.btn-enter:hover {
+.btn-enter:hover, .btn-enter:active {
     background: #ff1a8c;
     box-shadow: 0 0 25px rgba(255, 26, 140, 0.8);
     transform: scale(1.05);
@@ -92,19 +99,20 @@ body {
 
 @keyframes floatText {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-8px); }
 }
 
 @keyframes fadeInSubtitle {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================= SCROLL REVEAL ================= */
+/* ================= SCROLL REVEAL (AKSELERASI GPU) ================= */
 .reveal {
     opacity: 0;
-    transform: translateY(60px);
-    transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform, opacity; /* Memicu Hardware Acceleration di HP */
 }
 
 .reveal.active {
@@ -112,10 +120,10 @@ body {
     transform: translateY(0);
 }
 
-/* ================= HERO SECTION (NEW BLACK & 3D BALLOONS) ================= */
+/* ================= HERO SECTION ================= */
 .hero {
     height: 100vh;
-    background: #050508; /* Background Hitam Mewah */
+    background: #050508;
     position: relative;
     display: flex;
     justify-content: center;
@@ -131,51 +139,46 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Agar tidak menghalangi tombol */
+    pointer-events: none;
 }
 
-/* Balon Love 3D Melayang */
+/* Balon Love 3D Dioptimasi untuk HP */
 .love-balloon {
     position: absolute;
-    bottom: -100px;
-    width: 50px;
-    height: 50px;
+    top: 0; /* Mulai dari atas kontainer, digerakkan lewat transform */
+    left: 0;
     cursor: pointer;
-    pointer-events: auto; /* Bisa diklik */
-    filter: drop-shadow(0 0 12px rgba(255, 26, 140, 0.85));
-    transition: transform 0.2s;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 10px rgba(255, 26, 140, 0.7));
+    will-change: transform; /* PENTING: Bikin animasi mulus di Chrome/Safari HP */
     animation: floatUp var(--duration) linear infinite;
 }
 
-.love-balloon:hover {
-    transform: scale(1.15);
-}
-
+/* Animasi memakai TranslateY agar diproses GPU, bukan CPU */
 @keyframes floatUp {
     0% {
-        bottom: -100px;
-        transform: translateX(0) rotate(-5deg);
+        transform: translateY(105vh) scale(0.9) rotate(-5deg);
     }
     50% {
-        transform: translateX(20px) rotate(10deg);
+        transform: translateY(50vh) scale(1) translateX(15px) rotate(8deg);
     }
     100% {
-        bottom: 110vh;
-        transform: translateX(-15px) rotate(-5deg);
+        transform: translateY(-15vh) scale(0.9) rotate(-5deg);
     }
 }
 
-/* Teks yang meledak dari balon */
+/* Efek Ledakan Teks */
 .pop-text {
     position: absolute;
     color: #ff80bf;
     font-family: 'Poppins', sans-serif;
     font-weight: 800;
-    font-size: 1.3rem;
-    letter-spacing: 2px;
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    letter-spacing: 1px;
     pointer-events: none;
-    text-shadow: 0 0 15px #ff1a8c, 0 0 30px #ff1a8c;
-    animation: popOut 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    text-shadow: 0 0 10px #ff1a8c, 0 0 20px #ff1a8c;
+    will-change: transform, opacity;
+    animation: popOut 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
 }
 
 @keyframes popOut {
@@ -183,50 +186,41 @@ body {
         opacity: 1;
         transform: translate(-50%, -50%) scale(0.5);
     }
-    50% {
-        transform: translate(-50%, -100%) scale(1.2);
-    }
     100% {
         opacity: 0;
-        transform: translate(-50%, -150%) scale(1);
+        transform: translate(-50%, -120%) scale(1.1);
     }
 }
 
-/* Teks Hero MISQAIRINI Sederhana & Menyala */
+/* Teks Utama MISQAIRINI */
 .glowing-text {
     font-family: 'Poppins', sans-serif;
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(2.8rem, 9vw, 5.5rem);
     font-weight: 800;
-    letter-spacing: 6px;
+    letter-spacing: 4px;
     text-transform: uppercase;
     color: #ffffff;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     position: relative;
     z-index: 2;
     animation: neonPulse 2s infinite alternate;
+    will-change: text-shadow;
 }
 
 @keyframes neonPulse {
     0% {
-        text-shadow: 0 0 7px #fff, 
-                     0 0 10px #ff1a8c, 
-                     0 0 21px #ff1a8c, 
-                     0 0 42px #ff1a8c, 
-                     0 0 82px #ff1a8c;
+        text-shadow: 0 0 6px #fff, 0 0 15px #ff1a8c, 0 0 30px #ff1a8c;
     }
     100% {
-        text-shadow: 0 0 4px #fff, 
-                     0 0 7px #ff80bf, 
-                     0 0 18px #ff80bf, 
-                     0 0 38px #ff1a8c, 
-                     0 0 65px #ff1a8c;
+        text-shadow: 0 0 3px #fff, 0 0 10px #ff80bf, 0 0 25px #ff1a8c;
     }
 }
 
 .dark-tagline {
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
     color: #e0e0e0;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
+    padding: 0 10px;
     font-weight: 400;
     position: relative;
     z-index: 2;
@@ -236,9 +230,10 @@ body {
 .hero-content {
     position: relative;
     z-index: 5;
+    width: 100%;
 }
 
-/* ================= SECTION LAINNYA ================= */
+/* ================= SECTION LAINNYA & RESPONSIVE GRID ================= */
 .btn-primary, .btn-love {
     display: inline-block;
     padding: 12px 35px;
@@ -247,135 +242,133 @@ body {
     text-decoration: none;
     border-radius: 50px;
     font-weight: 600;
-    box-shadow: 0 0 20px rgba(255, 26, 140, 0.5);
-    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 15px rgba(255, 26, 140, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
     border: none;
     cursor: pointer;
 }
 
-.btn-primary:hover, .btn-love:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 0 30px rgba(255, 26, 140, 0.9);
+.btn-primary:active, .btn-love:active {
+    transform: scale(0.95); /* Efek membal pas ditekan di layar HP */
 }
 
 .timer-section {
     text-align: center;
-    padding: 80px 20px;
+    padding: 60px 15px;
     background: white;
 }
 
 .timer-section h2, .story-section h2, .gallery-section h2, .interactive-section h2 {
     color: #d81b60;
-    margin-bottom: 30px;
-    font-size: 2rem;
+    margin-bottom: 25px;
+    font-size: clamp(1.5rem, 5vw, 2rem);
 }
 
 .timer-box {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
 .time-unit {
     background: #fce4ec;
-    padding: 20px;
+    padding: 15px 10px;
     border-radius: 12px;
-    min-width: 90px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    flex: 1;
+    min-width: 75px;
+    max-width: 100px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
 .time-unit span {
-    font-size: 2rem;
+    font-size: clamp(1.3rem, 4vw, 2rem);
     font-weight: 600;
     color: #880e4f;
     display: block;
 }
 
+.time-unit small {
+    font-size: 0.75rem;
+}
+
 .story-section {
-    padding: 80px 20px;
-    max-width: 800px;
+    padding: 60px 15px;
+    max-width: 600px;
     margin: 0 auto;
-    text-align: center;
 }
 
 .timeline {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 }
 
 .card {
     background: white;
-    padding: 25px;
+    padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
     border-left: 5px solid #e91e63;
     text-align: left;
-    transition: transform 0.3s ease;
 }
 
-.card:hover {
-    transform: translateX(10px);
+.card h3 {
+    font-size: 1.1rem;
 }
 
 .card .date {
     color: #e91e63;
     font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
 }
 
 .gallery-section {
-    padding: 80px 20px;
-    text-align: center;
+    padding: 60px 15px;
     background: white;
 }
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    max-width: 1000px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Grid menyesuaikan lebar HP */
+    gap: 12px;
+    max-width: 800px;
     margin: 0 auto;
 }
 
 .photo-card {
-    height: 300px;
-    border-radius: 15px;
+    height: 200px; /* Tinggi disesuaikan agar pas di layar HP */
+    border-radius: 12px;
     background-size: cover;
     background-position: center;
     display: flex;
     align-items: flex-end;
-    padding: 20px;
+    padding: 12px;
     color: white;
+    font-size: 0.85rem;
     font-weight: 600;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.7);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: transform 0.4s ease;
-}
-
-.photo-card:hover {
-    transform: scale(1.03);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .interactive-section {
-    padding: 80px 20px;
+    padding: 60px 15px;
     text-align: center;
 }
 
 .hidden-message {
-    margin-top: 25px;
-    font-size: 1.2rem;
+    margin-top: 20px;
+    font-size: 1.1rem;
     color: #880e4f;
     font-weight: 600;
-    min-height: 50px;
+    padding: 0 10px;
 }
 
 footer {
     text-align: center;
-    padding: 20px;
+    padding: 20px 10px;
     background: #f8bbd0;
     color: #880e4f;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
