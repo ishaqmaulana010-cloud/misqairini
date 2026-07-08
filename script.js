@@ -5,12 +5,11 @@ const introScreen = document.getElementById('intro-screen');
 enterBtn.addEventListener('click', () => {
     introScreen.classList.add('slide-up');
     setTimeout(() => {
-        const hero = document.querySelector('.hero');
-        if (hero) hero.classList.add('active');
-    }, 300);
+        document.querySelector('.hero').classList.add('active');
+    }, 400);
 });
 
-// 2. SMOOTH SCROLL REVEAL (OPTIMIZED)
+// 2. SMOOTH SCROLL REVEAL
 const revealElements = document.querySelectorAll('.reveal');
 const revealOnScroll = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -18,16 +17,15 @@ const revealOnScroll = new IntersectionObserver((entries) => {
             entry.target.classList.add('active');
         }
     });
-}, { 
-    threshold: 0.08 // Diperkecil agar elemen cepat muncul di layar HP yang pendek
-});
+}, { threshold: 0.15 });
 
 revealElements.forEach(el => revealOnScroll.observe(el));
 
 
-// 3. FITUR BALON LOVE 3D MELAYANG & MELEDAK (HIGH PERFORMANCE)
+// 3. FITUR BALON LOVE 3D MELAYANG & MELEDAK
 const balloonContainer = document.getElementById('balloon-container');
 
+// SVG Hati 3D bergradasi bercahaya pink
 const balloonSVG = `
 <svg viewBox="0 0 32 29.6" width="100%" height="100%">
   <defs>
@@ -45,44 +43,43 @@ const balloonSVG = `
 function createLoveBalloon() {
     if (!balloonContainer) return;
 
-    // Batasi jumlah balon maksimal di layar HP agar tidak overload (Maks 15 balon)
-    if (balloonContainer.childElementCount > 15) return;
-
     const balloon = document.createElement('div');
     balloon.classList.add('love-balloon');
     balloon.innerHTML = balloonSVG;
 
-    const randomLeft = Math.random() * 85; // Dipersempit agar tidak mentok ke sisi kanan layar HP
-    const randomSize = Math.floor(Math.random() * 15) + 35; // Ukuran disesuaikan untuk HP (35px - 50px)
-    const randomDuration = Math.random() * 4 + 5; // Kecepatan melayang (5 - 9 detik)
+    // Posisi acak horizontal & ukuran acak
+    const randomLeft = Math.random() * 90; // 0% sampai 90%
+    const randomSize = Math.floor(Math.random() * 25) + 35; // Ukuran 35px - 60px
+    const randomDuration = Math.random() * 5 + 6; // Kecepatan melayang 6 - 11 detik
 
     balloon.style.left = `${randomLeft}%`;
     balloon.style.width = `${randomSize}px`;
     balloon.style.height = `${randomSize}px`;
     balloon.style.setProperty('--duration', `${randomDuration}s`);
 
-    // EVENT DIUBAH KE POINTERDOWN (Langsung meledak pas disentuh di HP tanpa delay klik)
-    balloon.addEventListener('pointerdown', (e) => {
+    // EVENT KETIKA BALON DIKLIK (MELEDAK JADI TEKS MISQAIRINI)
+    balloon.addEventListener('click', (e) => {
+        // Hapus balon
         balloon.remove();
 
+        // Buat efek teks meledak di koordinat klik
         const popText = document.createElement('span');
         popText.classList.add('pop-text');
         popText.innerText = "MISQAIRINI ✨";
-        
-        // Menghitung koordinat sentuhan secara akurat di HP
         popText.style.left = `${e.clientX}px`;
         popText.style.top = `${e.clientY}px`;
 
         document.body.appendChild(popText);
 
+        // Hapus teks setelah animasi selesai (1.2 detik)
         setTimeout(() => {
             popText.remove();
-        }, 1000);
+        }, 1200);
     });
 
     balloonContainer.appendChild(balloon);
 
-    // Otomatis hapus saat keluar layar agar menghemat memori RAM HP
+    // Hapus balon secara otomatis kalau sudah terbang melewati layar agar tidak bikin berat web
     setTimeout(() => {
         if (balloon.parentNode) {
             balloon.remove();
@@ -90,12 +87,12 @@ function createLoveBalloon() {
     }, randomDuration * 1000);
 }
 
-// Interval kemunculan balon (Setiap 900ms agar pas, tidak terlalu padat di HP)
-setInterval(createLoveBalloon, 900);
+// Munculkan balon baru setiap 800 milidetik (0.8 detik)
+setInterval(createLoveBalloon, 800);
 
 
 // 4. LOVE TIMER
-const startDate = new Date('2024-01-01T00:00:00'); // <--- Ganti tanggal jadian kamu di sini bre!
+const startDate = new Date('2023-09-26T14:55:30');
 
 function updateTimer() {
     const now = new Date();
@@ -120,10 +117,10 @@ updateTimer();
 
 // 5. PESAN CINTA INTERAKTIF
 const loveMessages = [
-    "Kakak sayang banget sama adek! ❤️",
     "Adek sayang banget sama kakak! ❤️",
+    "Kakak sayang banget sama adek! ❤️",
     "Terima kasih sudah jadi pasangan terbaik di dunia! 🌸",
-    "sayangg kangenn.. Nanti kita ketemu ya! 🥰",
+    "Sayangg kangen.. Nanti kita ketemu ya! 🥰",
     "Kamu adalah alasan tersenyumku hari ini. ✨",
     "I love you today, tomorrow, and forever! 💖"
 ];
@@ -138,8 +135,8 @@ if(loveBtn) {
         
         setTimeout(() => {
             loveMessageDisplay.innerText = loveMessages[randomIndex];
-            loveMessageDisplay.style.transition = "opacity 0.4s ease-in";
+            loveMessageDisplay.style.transition = "opacity 0.5s ease-in";
             loveMessageDisplay.style.opacity = 1;
-        }, 100);
+        }, 150);
     });
 }
